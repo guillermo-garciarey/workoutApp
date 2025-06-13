@@ -6,6 +6,7 @@
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js';
 	import { Separator } from '$lib/components/ui/separator/index.js';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
+	import { redirect } from '@sveltejs/kit';
 
 	import { supabase } from '$lib/supabaseClient';
 	import { goto } from '$app/navigation';
@@ -13,6 +14,18 @@
 
 	import { page } from '$app/stores';
 	import { derived } from 'svelte/store';
+
+	// Enforce that only logged-in users can access these pages
+
+	export async function load({ parent }) {
+		const { session } = await parent();
+
+		if (!session) {
+			throw redirect(302, '/login');
+		}
+
+		return { session };
+	}
 
 	const pathSegments = derived(page, ($page) =>
 		$page.url.pathname
