@@ -17,23 +17,23 @@
 	export const navMain = [
 		{
 			title: 'Home',
-			url: '#',
+			url: '/home',
 			icon: HouseIcon,
 			isActive: true,
 
 			items: [
-				{ title: 'Daily Snapshot', url: '#' },
-				{ title: 'Progress History', url: '#' }
+				{ title: 'Daily Snapshot', url: '/home' },
+				{ title: 'Progress History', url: '/home' }
 				// { title: 'Settings', url: '#' }
 			]
 		},
 		{
 			title: 'Activities',
-			url: '#',
+			url: '/activities',
 			icon: DumbbellIcon,
 			items: [
-				{ title: 'Log Activity', url: '#' },
-				{ title: 'Activity Library', url: '#' },
+				{ title: 'Log Activity', url: '/activities' },
+				{ title: 'Activity Library', url: '/activities' },
 				{ title: 'New Activity', url: '/activities' }
 			]
 		},

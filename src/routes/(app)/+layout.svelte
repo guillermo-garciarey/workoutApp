@@ -1,35 +1,35 @@
 <script>
-	import '../../app.css';
+	import { supabase } from '$lib/supabaseClient';
+	import { goto } from '$app/navigation';
+
 	import { onMount } from 'svelte';
+
+	onMount(async () => {
+		const {
+			data: { session }
+		} = await supabase.auth.getSession();
+
+		if (!session) {
+			goto('/login');
+		}
+	});
+
+	import '../../app.css';
+
 	import { loadUser } from '$stores/user';
 	import AppSidebar from '$lib/components/app-sidebar.svelte';
 	import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js';
 	import { Separator } from '$lib/components/ui/separator/index.js';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
-	import { redirect } from '@sveltejs/kit';
 
-	import { supabase } from '$lib/supabaseClient';
-	import { goto } from '$app/navigation';
 	import { user } from '$stores/user';
-
 	import { page } from '$app/stores';
 	import { derived } from 'svelte/store';
 
-	// Enforce that only logged-in users can access these pages
-
-	export async function load({ parent }) {
-		const { session } = await parent();
-
-		if (!session) {
-			throw redirect(302, '/login');
-		}
-
-		return { session };
-	}
-
+	// Track path segments
 	const pathSegments = derived(page, ($page) =>
 		$page.url.pathname
-			.replace(/^\/app\/?/, '') // strip /app
+			.replace(/^\/app\/?/, '') // strip /app prefix
 			.split('/')
 			.filter(Boolean)
 	);
@@ -59,15 +59,15 @@
 				<Separator orientation="vertical" class="mr-2 data-[orientation=vertical]:h-4" />
 				<Breadcrumb.Root>
 					<Breadcrumb.List>
-						{#if pathSegments.length > 0}
+						{#if $pathSegments.length > 0}
 							<Breadcrumb.Item>
-								<Breadcrumb.Link href="/app/home">Home</Breadcrumb.Link>
+								<Breadcrumb.Link href="/home">Main</Breadcrumb.Link>
 							</Breadcrumb.Item>
-							{#each pathSegments as segment, i}
+							{#each $pathSegments as segment, i}
 								<Breadcrumb.Separator />
 								<Breadcrumb.Item>
-									{#if i < pathSegments.length - 1}
-										<Breadcrumb.Link href={'/app/' + pathSegments.slice(0, i + 1).join('/')}>
+									{#if i < $pathSegments.length - 1}
+										<Breadcrumb.Link href={'/app/' + $pathSegments.slice(0, i + 1).join('/')}>
 											{formatSegment(segment)}
 										</Breadcrumb.Link>
 									{:else}

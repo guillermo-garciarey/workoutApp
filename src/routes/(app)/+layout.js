@@ -1,4 +1,3 @@
-// src/routes/+page.js
 import { redirect } from '@sveltejs/kit';
 import { supabase } from '$lib/supabaseClient';
 
@@ -7,9 +6,7 @@ export async function load() {
 		data: { session }
 	} = await supabase.auth.getSession();
 
-	if (session) {
-		throw redirect(302, '/home');
-	} else {
+	if (!session) {
 		throw redirect(302, '/login');
 	}
 }
